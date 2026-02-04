@@ -111,13 +111,21 @@ var enrichedModels$ = getKeycloakImportConfigModels$
     .pipe(map(spidIdPOfficialMetadataWithImportConfigModel => {
         let [idPOfficialMetadata, importConfigModel] = spidIdPOfficialMetadataWithImportConfigModel
         let configIdp = {...idPTemplate.config, ...importConfigModel, ...idPOfficialMetadata.config}
+
         let firstLevel = {
             alias: idPOfficialMetadata.alias,
             displayName: idPOfficialMetadata.displayName
         }
+
         let merged = {...idPTemplate, ...firstLevel}
         merged.config = configIdp
         merged.config.metadataDescriptorUrl=idPOfficialMetadata.registry_link;
+
+		// Imposta custom SP Entity ID solo se presente
+		if (config.customEntityId && config.customEntityId.trim() !== "") {
+			merged.config['entityId'] = config.customEntityId.trim();
+		}
+
         return merged
     }))
 
