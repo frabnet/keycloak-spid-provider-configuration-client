@@ -47,7 +47,20 @@ exports.enrichIdpWithConfigData = function (idpOriginal) {
         idp['metadata_url']=config.spidMetadataAlternativeURLPrefix + idpOriginal.file_name;
     }
     let cleanedupSpidName = idp.entity_name.replace('TI Trust Technologies', 'Tim').replace(/ ID|SPIDItalia | S\.C\.p\.A\.| S\.p\.A\.| srl| spa| italiane|PEC/ig, '');
-    idp.alias = slugify(SPID_ALIAS_PREFIX + cleanedupSpidName).toLowerCase();
+
+    // estrai alias dal logo ufficiale SPID
+    if (idpOriginal.logo_uri) {
+        const match = idpOriginal.logo_uri.match(/spid-idp-(.+)\.(svg|png)/);
+        if (match && match[1]) {
+            idp.alias = match[1].toLowerCase();   // esempio: sielteid
+        }
+    }
+    
+    // fallback se manca logo_uri
+    if (!idp.alias) {
+        idp.alias = slugify("spid-" + idp.entity_name).toLowerCase();
+    }
+    
     if (idp.metadata_url != config.spidValidatorIdPMetadataURL) { // do not tamper official name as per AgID guidelines
         idp.displayName = SPID_PREFIX + cleanedupSpidName;
     } 
