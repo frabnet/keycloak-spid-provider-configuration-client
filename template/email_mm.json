@@ -4,7 +4,7 @@
     "identityProviderMapper": "spid-user-attribute-idp-mapper",
     "config": {
         "syncMode": "INHERIT",
-        "user.attribute": "spid-email",
+        "user.attribute": "email",
         "attribute": "email",
         "attribute.name": "email"
     }
